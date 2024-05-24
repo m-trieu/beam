@@ -85,7 +85,7 @@ public final class StreamingWorkScheduler {
   private final DataflowExecutionStateSampler sampler;
   private final AtomicInteger maxWorkItemCommitBytes;
 
-  public StreamingWorkScheduler(
+  private StreamingWorkScheduler(
       DataflowWorkerHarnessOptions options,
       Supplier<Instant> clock,
       ExecutionStateFactory executionStateFactory,
@@ -251,7 +251,6 @@ public final class StreamingWorkScheduler {
     if (workItem.getSourceState().getOnlyFinalize()) {
       Windmill.WorkItemCommitRequest.Builder outputBuilder = initializeOutputBuilder(key, workItem);
       outputBuilder.setSourceStateUpdates(Windmill.SourceState.newBuilder().setOnlyFinalize(true));
-      work.setState(Work.State.COMMIT_QUEUED);
       work.queueCommit(outputBuilder.build(), computationState);
       return;
     }
